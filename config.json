@@ -1,0 +1,7 @@
+{
+    "github_urls": ["https://raw.githubusercontent.com/prxchk/proxy-list/main/socks4.txt", "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks5.txt", "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/https.txt"],
+    "num_accounts_per_proxy": 5,
+    "username_length": 8,
+    "password_length": 12,
+    "timeout": 30
+}
