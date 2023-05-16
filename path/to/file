@@ -1,0 +1,18 @@
+import requests
+
+def retry_on_timeout_error(register_and_activate_account, proxies):
+    """
+    This function handles the TimeoutError exception and retries the account creation
+    process with the next available proxy.
+
+    :param register_and_activate_account: function to register and activate account
+    :param proxies: list of proxies to be used for account creation
+    """
+    try:
+        register_and_activate_account(proxies)
+    except requests.exceptions.Timeout:
+        print("Timeout while creating account. Retrying with next available proxy...")
+        if proxies:
+            retry_on_timeout_error(register_and_activate_account, proxies[1:]) # recursively call function to retry with next available proxy
+        else:
+            print("Failed to create account with all available proxies.")
