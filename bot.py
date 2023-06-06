@@ -8,13 +8,16 @@ import logging
 import requests
 from bs4 import BeautifulSoup
 from logging.handlers import RotatingFileHandler
-from tempmail import TempMail  # <--- Import TempMail class from tempmail.py
+from tempmail import TempMail
 
 def fetch_proxies_from_github(urls):
     proxies = []
     for url in urls:
         try:
             response = requests.get(url)
+            response.raise_for_status()
+            proxies += response.text.split('\n')
+        except requests.exceptions.RequestException as e:
             response.raise_for_status()  # Check that the request was successful
             proxies += response.text.split('\n')
         except requests.exceptions.RequestException as e:
