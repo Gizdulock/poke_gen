@@ -1,0 +1,37 @@
+<!-- registration.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Registration</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	<h1>Registration Form</h1>
+	<form action="submit-registration.php" method="post">
+		<label for="name">Name:</label><br>
+		<input type="text" id="name" name="name" value="John Doe"><br>
+		<label for="email">Email:</label><br>
+		<input type="email" id="email" name="email" value="johndoe@example.com"><br>
+		<label for="password">Password:</label><br>
+		<input type="password" id="password" name="password" value="password123"><br>
+		<input type="submit" value="Submit">
+	</form>
+	<!-- Dynamic HTML decoding -->
+	<script>
+		var nameField = document.getElementById("name");
+		nameField.value = decodeURIComponent(nameField.value);
+		var emailField = document.getElementById("email");
+		emailField.value = decodeURIComponent(emailField.value);
+		var passwordField = document.getElementById("password");
+		passwordField.value = decodeURIComponent(passwordField.value);
+	</script>
+</body>
+</html>
+```
+
+```
+{
+    "outcome": "Successfully created the registration.html file with dynamic HTML decoding."
+}
