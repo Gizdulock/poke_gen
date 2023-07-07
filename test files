@@ -2,7 +2,6 @@ import unittest
 from bot import register_and_activate_account
 from unittest.mock import MagicMock, patch
 
-
 class TestBot(unittest.TestCase):
 
     @patch('bot.TempMail')
@@ -24,6 +23,15 @@ class TestBot(unittest.TestCase):
         with self.assertRaises(Exception):
             register_and_activate_account(mock_session, mock_tempmail, 'testproxy', 'test@mail.com', 'testuser', 'testpass')
 
+    @patch('bot.TempMail')
+    @patch('bot.aiohttp.ClientSession')
+    def test_dynamic_html_decoding(self, mock_session, mock_tempmail):
+        mock_tempmail.mail = 'test@mail.com'
+        mock_session.post.return_value.__aenter__.return_value.status = 200
+        mock_tempmail.parse_mail.return_value = '<a href="https://club.pokemon.com/us/pokemon-trainer-club/activated/123456"></a>'
+
+        result = register_and_activate_account(mock_session, mock_tempmail, 'testproxy', 'test@mail.com', 'testuser', 'testpass')
+        self.assertEqual(result, '<a href="https://club.pokemon.com/us/pokemon-trainer-club/activated/123456"></a>')
 
 if __name__ == '__main__':
     unittest.main()
