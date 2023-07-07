@@ -1,0 +1,29 @@
+import unittest
+from bot import register_and_activate_account
+from unittest.mock import MagicMock, patch
+
+
+class TestBot(unittest.TestCase):
+
+    @patch('bot.TempMail')
+    @patch('bot.aiohttp.ClientSession')
+    def test_register_and_activate_account(self, mock_session, mock_tempmail):
+        mock_tempmail.mail = 'test@mail.com'
+        mock_session.post.return_value.__aenter__.return_value.status = 200
+        mock_tempmail.check_mails.return_value = [{'mail_subject': 'Activate Your Pokémon Trainer Club Account', 'mail_text': '<a href="https://club.pokemon.com/us/pokemon-trainer-club/activated/123456"></a>'}]
+
+        result = register_and_activate_account(mock_session, mock_tempmail, 'testproxy', 'test@mail.com', 'testuser', 'testpass')
+        self.assertTrue(result)
+
+    @patch('bot.TempMail')
+    @patch('bot.aiohttp.ClientSession')
+    def test_register_and_activate_account_fail(self, mock_session, mock_tempmail):
+        mock_tempmail.mail = 'test@mail.com'
+        mock_session.post.return_value.__aenter__.return_value.status = 400
+
+        with self.assertRaises(Exception):
+            register_and_activate_account(mock_session, mock_tempmail, 'testproxy', 'test@mail.com', 'testuser', 'testpass')
+
+
+if __name__ == '__main__':
+    unittest.main()

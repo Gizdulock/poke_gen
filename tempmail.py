@@ -4,6 +4,7 @@ from re import search
 import sys, os, string
 import requests
 import aiohttp
+from bs4 import BeautifulSoup
 
 class TempMail:
     API = 'https://www.1secmail.com/api/v1/'
@@ -62,7 +63,9 @@ class TempMail:
     def read_mail(self, mail_id):
         msg_read = f'{self.API}?action=readMessage&login={self.login}&domain={self.domain}&id={mail_id}'
         req = requests.get(msg_read).json()
+        soup = BeautifulSoup(req['body'], 'html.parser')
         content = dict(req.items())
+        content['body'] = soup.get_text()
         content['id'] = mail_id
         return content
 
@@ -79,7 +82,7 @@ class TempMail:
         async with aiohttp.ClientSession() as session:
             response = await session.get(request_link)
             req = await response.json()
-        
+
         self.recived_mails = len(req)
         if self.recived_mails == 0:
             if self.verbose:
@@ -96,17 +99,17 @@ class TempMail:
             print(f"[+] You received {self.recived_mails}", 'mails' if self.recived_mails > 1 else 'mail')
         return req
 
-def run_server(self):
-    try:
-        while True:
-            self.check_mails()
-            self.mail_dir = self.mkdir('Mails')
-            for mail_id in self.mail_ids:
-                content = self.read_mail(mail_id)
-                self.write_mail(content)
-            sleep(5)
-    except KeyboardInterrupt:
-        self.delete_mail()
-        if self.verbose:
-            os.system('cls' if os.name == 'nt' else 'clear')
-            print(f'[+] {self.mail} Deleted')
+    def run_server(self):
+        try:
+            while True:
+                self.check_mails()
+                self.mail_dir = self.mkdir('Mails')
+                for mail_id in self.mail_ids:
+                    content = self.read_mail(mail_id)
+                    self.write_mail(content)
+                sleep(5)
+        except KeyboardInterrupt:
+            self.delete_mail()
+            if self.verbose:
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print(f'[+] {self.mail} Deleted')
